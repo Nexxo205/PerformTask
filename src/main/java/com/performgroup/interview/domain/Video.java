@@ -84,4 +84,11 @@ public class Video implements Serializable {
 		this.creationDate = creationDate;
 	}
 
+	@Override
+	public String toString() {
+		return "Video [id=" + id + ", title=" + title + ", videoPath="
+				+ videoPath + ", videoType=" + videoType + ", creationDate="
+				+ creationDate + "]";
+	}
+
 }
