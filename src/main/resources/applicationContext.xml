@@ -11,7 +11,7 @@
 	<context:property-placeholder location="classpath:perform.properties" />
 
 	<context:annotation-config />
-	
+
 	<bean id="dataSource"
 		class="org.springframework.jdbc.datasource.SingleConnectionDataSource">
 		<property name="driverClassName" value="org.hsqldb.jdbcDriver" />
@@ -37,24 +37,35 @@
 
 	<bean id="hibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
 		<description>
-			Template is configured with session factory defined in the main web app
+			Template is configured with session factory defined in
+			the main web app
 		</description>
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
-	
+
 	<!-- Runner -->
 	<bean id="videoProcessor" class="com.performgroup.interview.cmd.VideoProcessor">
 		<property name="videoService" ref="videoService" />
-		<property name="videoIngestFolder" value="${videoIngest.folder}"/>
+		<property name="videoIngestFolder" value="${videoIngest.folder}" />
+		<property name="videoReportingService" ref="videoReportingService"/>
 	</bean>
 
 	<!-- Data Access Objects -->
 	<bean id="videoDAO" class="com.performgroup.interview.dao.VideoHibernateDAO">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
+	
+	<bean id="videoReportingJDBCDAO" class="com.performgroup.interview.dao.VideoReportingJDBCDAO">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
 
-	<!-- Services  -->
+	<!-- Services -->
 	<bean id="videoService"
 		class="com.performgroup.interview.service.impl.VideoServiceImpl" />
 
+	<bean id="videoReportingService"
+		class="com.performgroup.interview.service.impl.VideoReportingServiceImpl" />
+
+	
 </beans>

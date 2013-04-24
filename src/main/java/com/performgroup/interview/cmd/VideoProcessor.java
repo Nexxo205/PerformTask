@@ -19,7 +19,9 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.performgroup.interview.domain.Video;
+import com.performgroup.interview.domain.VideoReportingBean;
 import com.performgroup.interview.domain.VideoType;
+import com.performgroup.interview.service.VideoReportingService;
 import com.performgroup.interview.service.VideoService;
 
 public class VideoProcessor {
@@ -27,11 +29,20 @@ public class VideoProcessor {
 	private transient VideoService videoService;
 
 	private transient String videoIngestFolder;
+	
+	private transient VideoReportingService videoReportingService;
 
 	@Resource
 	public void setVideoService(VideoService videoService) {
 		this.videoService = videoService;
 	}
+	
+	@Resource
+	public void setVideoReportingService(VideoReportingService videoReportingService) {
+		this.videoReportingService = videoReportingService;
+	}
+
+
 
 	public void setVideoIngestFolder(String videoIngestFolder) {
 		this.videoIngestFolder = videoIngestFolder;
@@ -66,6 +77,8 @@ public class VideoProcessor {
 
 		InputStream in = this.getClass().getClassLoader()
 				.getResourceAsStream(path);
+		
+		System.out.println("path "+path);
 		if (in == null) {
 			logger.info("Cannot find file");
 		} else {
@@ -96,10 +109,8 @@ public class VideoProcessor {
 						VideoType videoType = null;
 						String videoPath = ""+eElement.getElementsByTagName("path").item(0).getTextContent();
 
-						for (VideoType vType : VideoType.values()) {
+						for (VideoType vType : VideoType.values()) {						
 							
-							System.out.println("element type "+eElement.getElementsByTagName("type").item(0).getTextContent());
-							System.out.println("video type "+vType.toString());
 							
 							if (eElement.getElementsByTagName("type").item(0).getTextContent().equals(vType.toString())){
 							videoType = vType;
@@ -140,4 +151,35 @@ public class VideoProcessor {
 		}
 	}
 
+	public void countDates(Logger logger) {
+
+		Collection<VideoReportingBean> videoReports = videoReportingService.countByDate();
+		for (VideoReportingBean videoReportBean : videoReports) {
+		videoReportOutput(logger, videoReportBean);
+		}
+	}
+
+	public void countTypes(Logger logger) {
+
+		Collection<VideoReportingBean> videoReports = videoReportingService.countByType();
+		for (VideoReportingBean videoReportBean : videoReports) {
+		videoReportOutput(logger, videoReportBean);
+		}
+	}
+	
+	public void countType(Logger logger, String videoType) {
+
+		VideoReportingBean videoReport = videoReportingService.countForType(videoType);
+
+		videoReportOutput(logger, videoReport);
+	}
+
+	private void videoReportOutput(Logger logger,VideoReportingBean videoReportBean) {
+		
+			String videoData = String.format("%d - %s ",
+					videoReportBean.getCount(), videoReportBean.getDescription());
+			logger.info(videoData);
+		
+	}
+	
 }

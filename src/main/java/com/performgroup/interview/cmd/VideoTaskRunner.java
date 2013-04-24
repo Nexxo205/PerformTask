@@ -1,11 +1,17 @@
 package com.performgroup.interview.cmd;
 
 import java.io.Console;
+import java.util.Collection;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.ClassPathResource;
+
+import com.performgroup.interview.dao.VideoReportingJDBCDAO;
+import com.performgroup.interview.domain.VideoReportingBean;
+import com.performgroup.interview.cmd.VideoProcessor;
 
 /**
  * The main entry point for the video ingest task
@@ -18,6 +24,9 @@ public class VideoTaskRunner {
 		"\n====== Usage ====== \n" +
 		"list = list videos in the system \n" +
 		"add = add a video after prompting for file path \n" +
+		"bydate = count videos ingested at diferent dates \n" +
+		"bytypes = count videos by all types \n" +
+		"bytype = count videos of specified type \n" +
 		"exit = exits the program \n" +
 		"usage = prints this help";
 
@@ -41,6 +50,7 @@ public class VideoTaskRunner {
 		ctx.refresh();
 
 		VideoProcessor videoProcessor = (VideoProcessor) ctx.getBean("videoProcessor");
+		//VideoReportingJDBCDAO videoReport = (VideoReportingJDBCDAO) ctx.getBean("videoReportingJDBCDAO");
 
 		while (true) {
 			
@@ -57,6 +67,17 @@ public class VideoTaskRunner {
 				System.out.println("Video file?");
 				String videoDataFile = c.readLine();
 				videoProcessor.ingestVideo(LOGGER, videoDataFile);
+			}
+			else if (input.equalsIgnoreCase("bydate")){
+				videoProcessor.countDates(LOGGER);				
+			}
+			else if(input.equalsIgnoreCase("bytypes")){
+				videoProcessor.countTypes(LOGGER);
+			}
+			else if(input.equalsIgnoreCase("bytype")){
+				System.out.println("Video type?");
+				String videoType = c.readLine();
+				videoProcessor.countType(LOGGER, videoType);
 			}
 			else if (input.equalsIgnoreCase("exit")) {
 				System.exit(0);
