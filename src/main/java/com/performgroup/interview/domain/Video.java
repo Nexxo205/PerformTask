@@ -1,7 +1,9 @@
 package com.performgroup.interview.domain;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -31,6 +33,7 @@ public class Video implements Serializable {
 	private String videoPath;
 	private VideoType videoType;
 	private Date creationDate;
+//	private String[] tags;
 
 	// Default Constructor
 	public Video(){
@@ -84,11 +87,17 @@ public class Video implements Serializable {
 		this.creationDate = creationDate;
 	}
 
-	@Override
-	public String toString() {
-		return "Video [id=" + id + ", title=" + title + ", videoPath="
-				+ videoPath + ", videoType=" + videoType + ", creationDate="
-				+ creationDate + "]";
-	}
+//	@Column (name = "tags", unique = false, nullable = true)
+//	public String[] getTags() {
+//		return tags;
+//	}
+//
+//	public void setTags(String[] tags) {
+//		this.tags = tags;
+//	}
+
+	
+
+	
 
 }

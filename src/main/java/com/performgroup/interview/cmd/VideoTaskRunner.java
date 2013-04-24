@@ -1,17 +1,11 @@
 package com.performgroup.interview.cmd;
 
 import java.io.Console;
-import java.util.Collection;
-import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.ClassPathResource;
-
-import com.performgroup.interview.dao.VideoReportingJDBCDAO;
-import com.performgroup.interview.domain.VideoReportingBean;
-import com.performgroup.interview.cmd.VideoProcessor;
 
 /**
  * The main entry point for the video ingest task

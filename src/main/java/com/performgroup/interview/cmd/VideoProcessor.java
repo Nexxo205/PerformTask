@@ -3,8 +3,12 @@ package com.performgroup.interview.cmd;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.xml.parsers.DocumentBuilder;
@@ -108,6 +112,18 @@ public class VideoProcessor {
 						String videoTitle = ""+ eElement.getElementsByTagName("title").item(0).getTextContent();
 						VideoType videoType = null;
 						String videoPath = ""+eElement.getElementsByTagName("path").item(0).getTextContent();
+//						List<String> tags = new ArrayList<String>();
+//						
+//						NodeList keywordList = eElement.getElementsByTagName("keywordSet");
+//						
+//						for (int currentKeyword = 0; currentKeyword < keywordList.getLength(); currentKeyword++) {
+//							Node currentKey= keywordList.item(currentKeyword); 
+//							if (currentKey.getNodeType() == Node.ELEMENT_NODE) {
+//								Element keywordElement = (Element) currentKey;
+//								tags.add(keywordElement.getElementsByTagName("keyword").item(0).getTextContent());
+//							}
+//							
+//						}
 
 						for (VideoType vType : VideoType.values()) {						
 							
@@ -128,7 +144,7 @@ public class VideoProcessor {
 						video.setTitle(videoTitle);
 						video.setVideoType(videoType);
 						video.setVideoPath(videoPath);
-						video.setCreationDate(new Timestamp(new Date().getTime()));
+						video.setCreationDate(new Timestamp(new Date().getTime()));						
 						
 						System.out.println(video.toString());
 						videoService.addVideo(video);

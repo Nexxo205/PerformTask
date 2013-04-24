@@ -34,7 +34,7 @@ public class VideoReportingJDBCDAO extends JdbcDaoSupport implements
 
 		List<Map> listOfDates = getJdbcTemplate().queryForList(
 				"select distinct(creation_date) from video;");
-
+		
 		for (Map distinctDate : listOfDates) {
 
 			Collection<Timestamp> timestampValuesList = distinctDate.values();
@@ -83,8 +83,8 @@ public class VideoReportingJDBCDAO extends JdbcDaoSupport implements
 	}
 
 	public VideoReportingBean countForVideoType(VideoType videoType) {
-		VideoReportingBean videoBean = countSpecificType(videoType);
-		return videoBean;
+		
+		return countSpecificType(videoType);
 	}
 
 	public VideoReportingBean countSpecificType(VideoType videoType) {
