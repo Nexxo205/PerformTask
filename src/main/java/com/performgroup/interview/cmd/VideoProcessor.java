@@ -33,20 +33,19 @@ public class VideoProcessor {
 	private transient VideoService videoService;
 
 	private transient String videoIngestFolder;
-	
+
 	private transient VideoReportingService videoReportingService;
 
 	@Resource
 	public void setVideoService(VideoService videoService) {
 		this.videoService = videoService;
 	}
-	
+
 	@Resource
-	public void setVideoReportingService(VideoReportingService videoReportingService) {
+	public void setVideoReportingService(
+			VideoReportingService videoReportingService) {
 		this.videoReportingService = videoReportingService;
 	}
-
-
 
 	public void setVideoIngestFolder(String videoIngestFolder) {
 		this.videoIngestFolder = videoIngestFolder;
@@ -81,121 +80,137 @@ public class VideoProcessor {
 
 		InputStream in = this.getClass().getClassLoader()
 				.getResourceAsStream(path);
-		
-		System.out.println("path "+path);
+
+		System.out.println("path " + path);
 		if (in == null) {
 			logger.info("Cannot find file");
 		} else {
 
-			try {
-				DocumentBuilderFactory dbFactory = DocumentBuilderFactory
-						.newInstance();
-				DocumentBuilder dBuilder;
-				dBuilder = dbFactory.newDocumentBuilder();
+			Video parsedVideo = new VideoSaxParser().parseXmlSax(in);
+			//parseXmlDom(in);
+			//videoService.addVideo(parsedVideo);
 
-				Document doc = dBuilder.parse(in);
-				doc.getDocumentElement().normalize();
-
-				NodeList nodeList = doc.getElementsByTagName("video");
-
-				for (int currentNodePos = 0; currentNodePos < nodeList
-						.getLength(); currentNodePos++) {
-
-					Node currentNode = nodeList.item(currentNodePos);
-
-					if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
-
-						Element eElement = (Element) currentNode;
-						// title type path
-						Video video = new Video();
-						
-						String videoTitle = ""+ eElement.getElementsByTagName("title").item(0).getTextContent();
-						VideoType videoType = null;
-						String videoPath = ""+eElement.getElementsByTagName("path").item(0).getTextContent();
-//						List<String> tags = new ArrayList<String>();
-//						
-//						NodeList keywordList = eElement.getElementsByTagName("keywordSet");
-//						
-//						for (int currentKeyword = 0; currentKeyword < keywordList.getLength(); currentKeyword++) {
-//							Node currentKey= keywordList.item(currentKeyword); 
-//							if (currentKey.getNodeType() == Node.ELEMENT_NODE) {
-//								Element keywordElement = (Element) currentKey;
-//								tags.add(keywordElement.getElementsByTagName("keyword").item(0).getTextContent());
-//							}
-//							
-//						}
-
-						for (VideoType vType : VideoType.values()) {						
-							
-							
-							if (eElement.getElementsByTagName("type").item(0).getTextContent().equals(vType.toString())){
-							videoType = vType;
-														
-							
-						}else {
-							//TODO handle better
-							System.err.println("Wrong video type!");
-						}
-							
-
-						}
-						
-						
-						video.setTitle(videoTitle);
-						video.setVideoType(videoType);
-						video.setVideoPath(videoPath);
-						video.setCreationDate(new Timestamp(new Date().getTime()));						
-						
-						System.out.println(video.toString());
-						videoService.addVideo(video);
-
-					}
-
-				}
-				// TODO
-			} catch (ParserConfigurationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (SAXException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 
 		}
 	}
 
+	private Video parseXmlDom(InputStream in) {
+		try {
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory
+					.newInstance();
+			DocumentBuilder dBuilder;
+			dBuilder = dbFactory.newDocumentBuilder();
+
+			Document doc = dBuilder.parse(in);
+			doc.getDocumentElement().normalize();
+
+			NodeList nodeList = doc.getElementsByTagName("video");
+
+			for (int currentNodePos = 0; currentNodePos < nodeList
+					.getLength(); currentNodePos++) {
+
+				Node currentNode = nodeList.item(currentNodePos);
+
+				if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
+
+					Element eElement = (Element) currentNode;
+					// title type path
+					Video video = new Video();
+
+					String videoTitle = ""
+							+ eElement.getElementsByTagName("title")
+									.item(0).getTextContent();
+					VideoType videoType = null;
+					String videoPath = ""
+							+ eElement.getElementsByTagName("path").item(0)
+									.getTextContent();
+					// List<String> tags = new ArrayList<String>();
+					//
+					// NodeList keywordList =
+					// eElement.getElementsByTagName("keywordSet");
+					//
+					// for (int currentKeyword = 0; currentKeyword <
+					// keywordList.getLength(); currentKeyword++) {
+					// Node currentKey= keywordList.item(currentKeyword);
+					// if (currentKey.getNodeType() == Node.ELEMENT_NODE) {
+					// Element keywordElement = (Element) currentKey;
+					// tags.add(keywordElement.getElementsByTagName("keyword").item(0).getTextContent());
+					// }
+					//
+					// }
+
+					for (VideoType vType : VideoType.values()) {
+
+						if (eElement.getElementsByTagName("type").item(0)
+								.getTextContent().equals(vType.toString())) {
+							videoType = vType;
+
+						} else {
+							// TODO handle better
+							System.err.println("Wrong video type!");
+						}
+
+					}
+
+					video.setTitle(videoTitle);
+					video.setVideoType(videoType);
+					video.setVideoPath(videoPath);
+					video.setCreationDate(new Timestamp(new Date()
+							.getTime()));
+
+					System.out.println(video.toString());
+					//return video;
+					//videoService.add(video);
+				}
+
+			}
+			// TODO
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return video;
+	}
+
 	public void countDates(Logger logger) {
 
-		Collection<VideoReportingBean> videoReports = videoReportingService.countByDate();
+		Collection<VideoReportingBean> videoReports = videoReportingService
+				.countByDate();
 		for (VideoReportingBean videoReportBean : videoReports) {
-		videoReportOutput(logger, videoReportBean);
+			videoReportOutput(logger, videoReportBean);
 		}
 	}
 
 	public void countTypes(Logger logger) {
 
-		Collection<VideoReportingBean> videoReports = videoReportingService.countByType();
+		Collection<VideoReportingBean> videoReports = videoReportingService
+				.countByType();
 		for (VideoReportingBean videoReportBean : videoReports) {
-		videoReportOutput(logger, videoReportBean);
+			videoReportOutput(logger, videoReportBean);
 		}
 	}
-	
+
 	public void countType(Logger logger, String videoType) {
 
-		VideoReportingBean videoReport = videoReportingService.countForType(videoType);
+		VideoReportingBean videoReport = videoReportingService
+				.countForType(videoType);
 
 		videoReportOutput(logger, videoReport);
 	}
 
-	private void videoReportOutput(Logger logger,VideoReportingBean videoReportBean) {
-		
-			String videoData = String.format("%d - %s ",
-					videoReportBean.getCount(), videoReportBean.getDescription());
-			logger.info(videoData);
-		
+	private void videoReportOutput(Logger logger,
+			VideoReportingBean videoReportBean) {
+
+		String videoData = String.format("%d - %s ",
+				videoReportBean.getCount(), videoReportBean.getDescription());
+		logger.info(videoData);
+
 	}
-	
+
 }
