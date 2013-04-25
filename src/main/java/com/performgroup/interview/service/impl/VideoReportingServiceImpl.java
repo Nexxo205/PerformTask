@@ -41,7 +41,7 @@ public class VideoReportingServiceImpl implements VideoReportingService{
 				videoType=type;
 			}
 		}
-		
+				
 		return getVideoReportDAO().countForVideoType(videoType);
 		
 	}

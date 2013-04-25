@@ -48,6 +48,7 @@
 		<property name="videoService" ref="videoService" />
 		<property name="videoIngestFolder" value="${videoIngest.folder}" />
 		<property name="videoReportingService" ref="videoReportingService"/>
+		<property name="saxParser" ref="saxParser"/>
 	</bean>
 
 	<!-- Data Access Objects -->
@@ -67,5 +68,7 @@
 	<bean id="videoReportingService"
 		class="com.performgroup.interview.service.impl.VideoReportingServiceImpl" />
 
+	<!-- Parser -->
+	<bean id="saxParser" class="com.performgroup.interview.cmd.VideoSaxParser"/>
 	
 </beans>
