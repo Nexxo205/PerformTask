@@ -13,8 +13,8 @@ public class Tag {
 	
 	private String name;
 	
-	@Id @GeneratedValue(strategy =GenerationType.AUTO)
-	@Column(name = "id", unique = true, nullable = false)
+	@GeneratedValue(strategy =GenerationType.AUTO)
+	@Column(name = "id", nullable= false)
 	public Integer getId() {
 		return id;
 	}
@@ -22,7 +22,8 @@ public class Tag {
 		this.id = id;
 	}
 	
-	@Column (name="tag_name", nullable = false, unique = true )
+	@Id
+	@Column (name="tag_name", nullable = false)
 	public String getName() {
 		return name;
 	}

@@ -36,6 +36,8 @@ public class VideoProcessor {
 	private transient String videoIngestFolder;
 
 	private transient VideoReportingService videoReportingService;
+	
+	private VideoSaxParser saxParser;
 
 	@Resource
 	public void setVideoService(VideoService videoService) {
@@ -46,6 +48,11 @@ public class VideoProcessor {
 	public void setVideoReportingService(
 			VideoReportingService videoReportingService) {
 		this.videoReportingService = videoReportingService;
+	}
+
+	@Resource
+	public void setSaxParser(VideoSaxParser saxParser) {
+		this.saxParser = saxParser;
 	}
 
 	public void setVideoIngestFolder(String videoIngestFolder) {
@@ -82,105 +89,24 @@ public class VideoProcessor {
 		InputStream in = this.getClass().getClassLoader()
 				.getResourceAsStream(path);
 
-		System.out.println("path " + path);
 		if (in == null) {
 			logger.info("Cannot find file");
 		} else {
 
-			Video parsedVideo = new VideoSaxParser().parseXmlSax(in);
-			// parseXmlDom(in);
+			Video parsedVideo = saxParser.parseXmlSax(in);			
 
 			if (parsedVideo == null) {				
 					System.out.println("Parsed video returned as null! Possible reason is wrong video type!");				
 			} else {
-				//videoService.addVideo(parsedVideo);
-				System.out.println("adding video");
+				System.out.println("ingesting video..");
+				videoService.addVideo(parsedVideo);
+				
 			}
 
 		}
-	}
+	}	
 
-	private Video parseXmlDom(InputStream in) {
-		try {
-			DocumentBuilderFactory dbFactory = DocumentBuilderFactory
-					.newInstance();
-			DocumentBuilder dBuilder;
-			dBuilder = dbFactory.newDocumentBuilder();
-
-			Document doc = dBuilder.parse(in);
-			doc.getDocumentElement().normalize();
-
-			NodeList nodeList = doc.getElementsByTagName("video");
-
-			for (int currentNodePos = 0; currentNodePos < nodeList.getLength(); currentNodePos++) {
-
-				Node currentNode = nodeList.item(currentNodePos);
-
-				if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
-
-					Element eElement = (Element) currentNode;
-					// title type path
-					Video video = new Video();
-
-					String videoTitle = ""
-							+ eElement.getElementsByTagName("title").item(0)
-									.getTextContent();
-					VideoType videoType = null;
-					String videoPath = ""
-							+ eElement.getElementsByTagName("path").item(0)
-									.getTextContent();
-					// List<String> tags = new ArrayList<String>();
-					//
-					// NodeList keywordList =
-					// eElement.getElementsByTagName("keywordSet");
-					//
-					// for (int currentKeyword = 0; currentKeyword <
-					// keywordList.getLength(); currentKeyword++) {
-					// Node currentKey= keywordList.item(currentKeyword);
-					// if (currentKey.getNodeType() == Node.ELEMENT_NODE) {
-					// Element keywordElement = (Element) currentKey;
-					// tags.add(keywordElement.getElementsByTagName("keyword").item(0).getTextContent());
-					// }
-					//
-					// }
-
-					for (VideoType vType : VideoType.values()) {
-
-						if (eElement.getElementsByTagName("type").item(0)
-								.getTextContent().equals(vType.toString())) {
-							videoType = vType;
-						}
-
-					}
-
-					if (videoType == null) {
-						return null;
-					}
-
-					video.setTitle(videoTitle);
-					video.setVideoType(videoType);
-					video.setVideoPath(videoPath);
-					video.setCreationDate(new Timestamp(new Date().getTime()));
-
-					System.out.println(video.toString());
-					return video;
-					// videoService.add(video);
-				}
-
-			}
-		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SAXException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-	}
-
+	
 	public void countDates(Logger logger) {
 
 		Collection<VideoReportingBean> videoReports = videoReportingService
@@ -203,7 +129,9 @@ public class VideoProcessor {
 
 		VideoReportingBean videoReport = videoReportingService
 				.countForType(videoType);
-
+		if (videoReport== null){
+			System.out.println("Wrong video type!");
+		}else
 		videoReportOutput(logger, videoReport);
 	}
 
