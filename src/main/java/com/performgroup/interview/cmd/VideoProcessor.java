@@ -3,6 +3,7 @@ package com.performgroup.interview.cmd;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -72,9 +73,9 @@ public class VideoProcessor {
 	 * Processes a video by ingesting data from XML
 	 * 
 	 * @param logger
-	 * @param videoFile
+	 * @param videoFile	 
 	 */
-	public void ingestVideo(Logger logger, String videoFile) {
+	public void ingestVideo(Logger logger, String videoFile){
 
 		String path = videoIngestFolder + videoFile;
 
@@ -87,9 +88,14 @@ public class VideoProcessor {
 		} else {
 
 			Video parsedVideo = new VideoSaxParser().parseXmlSax(in);
-			//parseXmlDom(in);
-			//videoService.addVideo(parsedVideo);
+			// parseXmlDom(in);
 
+			if (parsedVideo == null) {				
+					System.out.println("Parsed video returned as null! Possible reason is wrong video type!");				
+			} else {
+				//videoService.addVideo(parsedVideo);
+				System.out.println("adding video");
+			}
 
 		}
 	}
@@ -106,8 +112,7 @@ public class VideoProcessor {
 
 			NodeList nodeList = doc.getElementsByTagName("video");
 
-			for (int currentNodePos = 0; currentNodePos < nodeList
-					.getLength(); currentNodePos++) {
+			for (int currentNodePos = 0; currentNodePos < nodeList.getLength(); currentNodePos++) {
 
 				Node currentNode = nodeList.item(currentNodePos);
 
@@ -118,8 +123,8 @@ public class VideoProcessor {
 					Video video = new Video();
 
 					String videoTitle = ""
-							+ eElement.getElementsByTagName("title")
-									.item(0).getTextContent();
+							+ eElement.getElementsByTagName("title").item(0)
+									.getTextContent();
 					VideoType videoType = null;
 					String videoPath = ""
 							+ eElement.getElementsByTagName("path").item(0)
@@ -144,27 +149,25 @@ public class VideoProcessor {
 						if (eElement.getElementsByTagName("type").item(0)
 								.getTextContent().equals(vType.toString())) {
 							videoType = vType;
-
-						} else {
-							// TODO handle better
-							System.err.println("Wrong video type!");
 						}
 
+					}
+
+					if (videoType == null) {
+						return null;
 					}
 
 					video.setTitle(videoTitle);
 					video.setVideoType(videoType);
 					video.setVideoPath(videoPath);
-					video.setCreationDate(new Timestamp(new Date()
-							.getTime()));
+					video.setCreationDate(new Timestamp(new Date().getTime()));
 
 					System.out.println(video.toString());
-					//return video;
-					//videoService.add(video);
+					return video;
+					// videoService.add(video);
 				}
 
 			}
-			// TODO
 		} catch (ParserConfigurationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -175,7 +178,7 @@ public class VideoProcessor {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return video;
+		return null;
 	}
 
 	public void countDates(Logger logger) {

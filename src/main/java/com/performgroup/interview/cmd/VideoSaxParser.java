@@ -2,6 +2,8 @@ package com.performgroup.interview.cmd;
 
 import java.io.File;
 import java.io.InputStream;
+import java.sql.Timestamp;
+import java.util.Date;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -10,8 +12,13 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import com.performgroup.interview.domain.Video;
+import com.performgroup.interview.domain.VideoType;
 
 public class VideoSaxParser {
+	
+	private String titleValue;
+	private String pathValue;
+	private VideoType typeval;
 
 	public Video parseXmlSax(InputStream in){
 		 
@@ -29,10 +36,10 @@ public class VideoSaxParser {
 		boolean title = false;
 		boolean type = false;
 		boolean path = false;
+		
 			 
 		public void startElement(String uri, String localName,String qName, 
 	                Attributes attributes) throws SAXException {
-	 
 			System.out.println("Start Element :" + qName);
 	 
 			if (qName.equalsIgnoreCase("title")) {
@@ -50,10 +57,8 @@ public class VideoSaxParser {
 		}
 	 
 		public void endElement(String uri, String localName,
-			String qName) throws SAXException {
-	 
+			String qName) throws SAXException {			
 			System.out.println("End Element :" + qName);
-	 
 		}
 	 
 		public void characters(char ch[], int start, int length) throws SAXException {
@@ -65,24 +70,43 @@ public class VideoSaxParser {
 			}
 	 
 			if (type) {
-				System.out.println("type : " + new String(ch, start, length));
-				String typevalString
-				type = false;
+				
+				for (VideoType vType : VideoType.values()) {
+
+					if (new String(ch, start, length).equals(vType.toString())) {
+						System.out.println("type : " + new String(ch, start, length));
+						typeval = vType;
+								type = false;
+					}
+
+				}
+				
 			}
 	 
 			if (path) {
 				System.out.println("path : " + new String(ch, start, length));
-				String pathValue = new String(ch, start, length);
+				pathValue = new String(ch, start, length);
 				path = false;
 			}	 
 			
 		}
 	 
-	     };
-	 
+	     };	     
+	     
 	       saxParser.parse(in, handler);
-	       video.set
-	       System.out.println(video.toString());
+	       
+	       if(typeval == null){
+				return null;
+			}
+	       
+	       video.setTitle(titleValue);
+	       video.setVideoPath(pathValue);
+	       video.setVideoType(typeval);
+	       video.setCreationDate(new Timestamp(new Date().getTime()) );	    
+	       
+	      // video.setTags(tags);
+	       	    
+	       return video;
 	 
 	     } catch (Exception e) {
 	       e.printStackTrace();

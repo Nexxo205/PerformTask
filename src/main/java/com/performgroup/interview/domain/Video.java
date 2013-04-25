@@ -33,7 +33,8 @@ public class Video implements Serializable {
 	private String videoPath;
 	private VideoType videoType;
 	private Date creationDate;
-//	private String[] tags;
+	private Collection<String> tags;
+
 
 	// Default Constructor
 	public Video(){
@@ -87,14 +88,16 @@ public class Video implements Serializable {
 		this.creationDate = creationDate;
 	}
 
-//	@Column (name = "tags", unique = false, nullable = true)
-//	public String[] getTags() {
-//		return tags;
-//	}
-//
-//	public void setTags(String[] tags) {
-//		this.tags = tags;
-//	}
+	@Column (name = "tags", unique = false, nullable = true)
+	public Collection<String> getTags() {
+		return tags;
+	}
+
+	public void setTags(Collection<String> tags) {
+		this.tags = tags;
+	}
+
+
 
 	
 

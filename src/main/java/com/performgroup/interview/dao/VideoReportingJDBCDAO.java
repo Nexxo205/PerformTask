@@ -31,7 +31,10 @@ public class VideoReportingJDBCDAO extends JdbcDaoSupport implements
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		List<VideoReportingBean> resultBeans = new ArrayList<VideoReportingBean>();
-
+		
+//		getJdbcTemplate().update("create view dates as" +
+//				"select extract(day from cration_date), extract(month from creation_date), (extract year from creation_date) from video ");
+		
 		List<Map> listOfDates = getJdbcTemplate().queryForList(
 				"select distinct(creation_date) from video;");
 		
@@ -53,7 +56,7 @@ public class VideoReportingJDBCDAO extends JdbcDaoSupport implements
 			// Date date = new Date(timestampValues.toArray()[0].);
 			
 
-			String sql = "select count(*) from video where creation_date between DATE\'"+sdf.format(value)+ "\' AND DATE\'"+sdf.format(valueNextDay)+"\';";
+			String sql = "select count(*) from video where creation_date between DATE\'"+sdf.format(value)+ "\' AND DATE\'"+sdf.format(valueNextDay)+"\' group by date creation_date;";
 					//+ sdf.format(value) + "\';";
 
 			System.out.println(sql);
