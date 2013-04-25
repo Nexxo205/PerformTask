@@ -31,6 +31,11 @@ public class VideoReportingServiceImpl implements VideoReportingService{
 		return getVideoReportDAO().countByVideoType();
 	}
 
+	
+	/**
+	 * Calls dao method with value of video type converted from string.
+	 * If no such value exists in VideoType enum, calls dao method with null
+	 */
 	public VideoReportingBean countForType(String videoTypeString) {
 		
 		VideoType[] typevalues = VideoType.values();

@@ -98,15 +98,21 @@ public class VideoProcessor {
 			if (parsedVideo == null) {				
 					System.out.println("Parsed video returned as null! Possible reason is wrong video type!");				
 			} else {
-				System.out.println("ingesting video..");
+				System.out.println("Ingesting video..");
 				videoService.addVideo(parsedVideo);
+				System.out.println("Video ingested!");
 				
 			}
 
 		}
 	}	
 
-	
+	/**
+	 * Calls method for counting videos depending on the day they were ingested,
+	 * then calls method that prints output 
+	 * 	
+	 * @param logger
+	 */
 	public void countDates(Logger logger) {
 
 		Collection<VideoReportingBean> videoReports = videoReportingService
@@ -116,6 +122,12 @@ public class VideoProcessor {
 		}
 	}
 
+	/**
+	 * Calls method for counting videos by all existing video types,
+	 * then calls method that prints output 
+	 * 
+	 * @param logger
+	 */
 	public void countTypes(Logger logger) {
 
 		Collection<VideoReportingBean> videoReports = videoReportingService
@@ -125,6 +137,13 @@ public class VideoProcessor {
 		}
 	}
 
+	/**
+	 * Calls method for counting videos by specified video type,
+	 * then calls method that prints output
+	 * 
+	 * @param logger
+	 * @param videoType
+	 */
 	public void countType(Logger logger, String videoType) {
 
 		VideoReportingBean videoReport = videoReportingService
@@ -135,6 +154,12 @@ public class VideoProcessor {
 		videoReportOutput(logger, videoReport);
 	}
 
+	/**
+	 * handles output for objects of VideoReportingBean
+	 * 
+	 * @param logger
+	 * @param videoReportBean 
+	 */
 	private void videoReportOutput(Logger logger,
 			VideoReportingBean videoReportBean) {
 

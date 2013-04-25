@@ -1,0 +1,5 @@
+searching videos by specific property
+adding more videos from one xml file
+listing videos by tags
+possibility to add more tags 
+including video status in solution 
