@@ -34,15 +34,20 @@ public class Video implements Serializable {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "VID_SEQ_GEN")
 	@Column(name = "id", unique = true, nullable = false)
 	private Long id;
+	
 	@Column(name = "title", unique = false, nullable = false)
 	private String title;
+	
 	@Column(name = "video_path", unique = false, nullable = false)
 	private String videoPath;
+	
 	@Column(name = "video_type", unique = false, nullable = false)
 	@Enumerated(value = EnumType.STRING)
 	private VideoType videoType;
+	
 	@Column(name = "creation_date", unique = false, nullable = false)
 	private Date creationDate;	
+	
 	@ManyToMany (fetch=FetchType.EAGER)
 	@JoinTable
 	(name="video_tags", joinColumns = @JoinColumn(name = "video_id"), inverseJoinColumns = @JoinColumn(name = "tag_name"))

@@ -38,7 +38,7 @@ public class VideoProcessor {
 	private transient String videoIngestFolder;
 
 	private transient VideoReportingService videoReportingService;
-	
+
 	private VideoSaxParser saxParser;
 
 	@Resource
@@ -77,7 +77,7 @@ public class VideoProcessor {
 			Collection<Tag> tags = video.getTags();
 			Hibernate.initialize(tags);
 			for (Tag tag : tags) {
-				videoData = videoData +" "+ tag.getName()+", ";
+				videoData = videoData + " " + tag.getName() + ", ";
 			}
 			videoData = videoData + "}";
 			logger.info(videoData);
@@ -88,9 +88,9 @@ public class VideoProcessor {
 	 * Processes a video by ingesting data from XML
 	 * 
 	 * @param logger
-	 * @param videoFile	 
+	 * @param videoFile
 	 */
-	public void ingestVideo(Logger logger, String videoFile){
+	public void ingestVideo(Logger logger, String videoFile) {
 
 		String path = videoIngestFolder + videoFile;
 
@@ -101,24 +101,25 @@ public class VideoProcessor {
 			logger.info("Cannot find file");
 		} else {
 
-			Video parsedVideo = saxParser.parseXmlSax(in);			
+			Video parsedVideo = saxParser.parseXmlSax(in);
 
-			if (parsedVideo == null) {				
-					System.out.println("Parsed video returned as null! Possible reason is wrong video type!");				
+			if (parsedVideo == null) {
+				System.out
+						.println("Parsed video returned as null! Possible reason is wrong video type!");
 			} else {
 				System.out.println("Ingesting video..");
 				videoService.addVideo(parsedVideo);
 				System.out.println("Video ingested!");
-				
+
 			}
 
 		}
-	}	
+	}
 
 	/**
 	 * Calls method for counting videos depending on the day they were ingested,
-	 * then calls method that prints output 
-	 * 	
+	 * then calls method that prints output
+	 * 
 	 * @param logger
 	 */
 	public void countDates(Logger logger) {
@@ -131,8 +132,8 @@ public class VideoProcessor {
 	}
 
 	/**
-	 * Calls method for counting videos by all existing video types,
-	 * then calls method that prints output 
+	 * Calls method for counting videos by all existing video types, then calls
+	 * method that prints output
 	 * 
 	 * @param logger
 	 */
@@ -146,8 +147,8 @@ public class VideoProcessor {
 	}
 
 	/**
-	 * Calls method for counting videos by specified video type,
-	 * then calls method that prints output
+	 * Calls method for counting videos by specified video type, then calls
+	 * method that prints output
 	 * 
 	 * @param logger
 	 * @param videoType
@@ -156,17 +157,17 @@ public class VideoProcessor {
 
 		VideoReportingBean videoReport = videoReportingService
 				.countForType(videoType);
-		if (videoReport== null){
+		if (videoReport == null) {
 			System.out.println("Wrong video type!");
-		}else
-		videoReportOutput(logger, videoReport);
+		} else
+			videoReportOutput(logger, videoReport);
 	}
 
 	/**
 	 * handles output for objects of VideoReportingBean
 	 * 
 	 * @param logger
-	 * @param videoReportBean 
+	 * @param videoReportBean
 	 */
 	private void videoReportOutput(Logger logger,
 			VideoReportingBean videoReportBean) {
@@ -177,4 +178,37 @@ public class VideoProcessor {
 
 	}
 
+	public void findTitle(Logger logger, String title) {
+
+		Collection<Video> videos = videoService.findTitle(title);
+		for (Video video : videos) {
+			String videoData = String.format("[%d] - %s / %s - %s | {",
+					video.getId(), video.getTitle(), video.getVideoType(),
+					video.getVideoPath());
+			Collection<Tag> tags = video.getTags();
+			Hibernate.initialize(tags);
+			for (Tag tag : tags) {
+				videoData = videoData + " " + tag.getName() + ", ";
+			}
+			videoData = videoData + "}";
+			logger.info(videoData);
+		}
+	}
+
+	public void findType(Logger logger, String stringType) {
+
+		Collection<Video> videos = videoService.findType(stringType);
+		for (Video video : videos) {
+			String videoData = String.format("[%d] - %s / %s - %s | {",
+					video.getId(), video.getTitle(), video.getVideoType(),
+					video.getVideoPath());
+			Collection<Tag> tags = video.getTags();
+			Hibernate.initialize(tags);
+			for (Tag tag : tags) {
+				videoData = videoData + " " + tag.getName() + ", ";
+			}
+			videoData = videoData + "}";
+			logger.info(videoData);
+		}
+	}
 }

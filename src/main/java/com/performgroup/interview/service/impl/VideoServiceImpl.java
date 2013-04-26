@@ -36,5 +36,13 @@ public class VideoServiceImpl implements VideoService {
 	public Collection<Video> listVideos() {
 		return getVideoDAO().findAll();
 	}
+	
+	public Collection<Video> findTitle(String title){
+		return getVideoDAO().findByTitle(title);
+	}
+
+	public Collection<Video> findType(String type) {
+		return getVideoDAO().findByType(type);		
+	}
 
 }

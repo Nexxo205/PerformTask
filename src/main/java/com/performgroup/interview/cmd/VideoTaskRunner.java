@@ -21,6 +21,8 @@ public class VideoTaskRunner {
 		"bydate = count videos ingested at diferent dates \n" +
 		"bytypes = count videos by all types \n" +
 		"bytype = count videos of specified type \n" +
+		"findtitle = find videos with specified title \n" +
+		"findtype = find videos with specified type \n" +
 		"exit = exits the program \n" +
 		"usage = prints this help";
 
@@ -72,6 +74,16 @@ public class VideoTaskRunner {
 				System.out.println("Video type?");
 				String videoType = c.readLine();
 				videoProcessor.countType(LOGGER, videoType);
+			}
+			else if(input.equalsIgnoreCase("findtitle")){
+				System.out.println("Video title?");
+				String videoTitle = c.readLine();
+				videoProcessor.findTitle(LOGGER, videoTitle);
+			}
+			else if(input.equalsIgnoreCase("findtype")){
+				System.out.println("Video type?");
+				String stringType = c.readLine();
+				videoProcessor.findType(LOGGER, stringType);
 			}
 			else if (input.equalsIgnoreCase("exit")) {
 				System.exit(0);

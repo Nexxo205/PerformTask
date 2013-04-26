@@ -1,6 +1,10 @@
 package com.performgroup.interview.dao;
 
 import java.util.Collection;
+import java.util.List;
+
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Restrictions;
 
 import com.performgroup.interview.domain.Video;
 
@@ -39,4 +43,7 @@ public interface VideoDAO {
 	 */
 	void delete(Video video);
 
+	Collection<Video> findByTitle(String title);
+	
+	Collection<Video> findByType(String stringType);
 }

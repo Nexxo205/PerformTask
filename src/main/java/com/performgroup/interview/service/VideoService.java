@@ -16,5 +16,8 @@ public interface VideoService {
 	void addVideo(Video video);
 
 	void deleteVideo(Video video);
-
+	
+	Collection<Video> findTitle(String title);
+	
+	Collection<Video> findType(String type);
 }
