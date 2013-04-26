@@ -17,12 +17,14 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Hibernate;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.performgroup.interview.domain.Tag;
 import com.performgroup.interview.domain.Video;
 import com.performgroup.interview.domain.VideoReportingBean;
 import com.performgroup.interview.domain.VideoType;
@@ -69,9 +71,15 @@ public class VideoProcessor {
 		Collection<Video> videos = videoService.listVideos();
 
 		for (Video video : videos) {
-			String videoData = String.format("[%d] - %s / %s - %s",
+			String videoData = String.format("[%d] - %s / %s - %s | {",
 					video.getId(), video.getTitle(), video.getVideoType(),
 					video.getVideoPath());
+			Collection<Tag> tags = video.getTags();
+			Hibernate.initialize(tags);
+			for (Tag tag : tags) {
+				videoData = videoData +" "+ tag.getName()+", ";
+			}
+			videoData = videoData + "}";
 			logger.info(videoData);
 		}
 	}

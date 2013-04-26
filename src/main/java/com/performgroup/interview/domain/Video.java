@@ -9,40 +9,51 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
 
+import org.hibernate.annotations.ManyToAny;
+
 /**
- * A POJO representing a video in the Perform system. 
-*/
+ * A POJO representing a video in the Perform system.
+ */
 
 @Entity
-@SequenceGenerator(
-    name="VID_SEQ_GEN",
-    sequenceName="VIDSEQ",
-    allocationSize=1
-)
+@SequenceGenerator(name = "VID_SEQ_GEN", sequenceName = "VIDSEQ", allocationSize = 1)
 public class Video implements Serializable {
 
 	private static final long serialVersionUID = 2284488937952510797L;
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "VID_SEQ_GEN")
+	@Column(name = "id", unique = true, nullable = false)
 	private Long id;
+	@Column(name = "title", unique = false, nullable = false)
 	private String title;
+	@Column(name = "video_path", unique = false, nullable = false)
 	private String videoPath;
+	@Column(name = "video_type", unique = false, nullable = false)
+	@Enumerated(value = EnumType.STRING)
 	private VideoType videoType;
-	private Date creationDate;
-//	private Collection<String> tags;
-
+	@Column(name = "creation_date", unique = false, nullable = false)
+	private Date creationDate;	
+	@ManyToMany (fetch=FetchType.EAGER)
+	@JoinTable
+	(name="video_tags", joinColumns = @JoinColumn(name = "video_id"), inverseJoinColumns = @JoinColumn(name = "tag_name"))
+	private Collection<Tag> tags;
 
 	// Default Constructor
-	public Video(){
+	public Video() {
 
 	}
 
-	@Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="VID_SEQ_GEN")
-	@Column(name = "id", unique = true, nullable = false)
+	
 	public Long getId() {
 		return id;
 	}
@@ -51,7 +62,7 @@ public class Video implements Serializable {
 		this.id = id;
 	}
 
-	@Column(name = "title", unique = false, nullable = false)
+	
 	public String getTitle() {
 		return title;
 	}
@@ -60,7 +71,7 @@ public class Video implements Serializable {
 		this.title = title;
 	}
 
-	@Column(name = "video_path", unique = false, nullable = false)
+	
 	public String getVideoPath() {
 		return videoPath;
 	}
@@ -69,8 +80,7 @@ public class Video implements Serializable {
 		this.videoPath = videoPath;
 	}
 
-	@Column(name = "video_type", unique = false, nullable = false)
-	@Enumerated(value=EnumType.STRING)
+	
 	public VideoType getVideoType() {
 		return videoType;
 	}
@@ -79,7 +89,7 @@ public class Video implements Serializable {
 		this.videoType = videoType;
 	}
 
-	@Column(name = "creation_date", unique = false, nullable = false)
+	
 	public Date getCreationDate() {
 		return creationDate;
 	}
@@ -88,19 +98,13 @@ public class Video implements Serializable {
 		this.creationDate = creationDate;
 	}
 
-//	@Column (name = "tags", unique = false, nullable = true)
-//	public Collection<String> getTags() {
-//		return tags;
-//	}
-//
-//	public void setTags(Collection<String> tags) {
-//		this.tags = tags;
-//	}
-
-
-
 	
+	public Collection<Tag> getTags() {
+		return tags;
+	}
 
-	
+	public void setTags(Collection<Tag> tags) {
+		this.tags = tags;
+	}
 
 }

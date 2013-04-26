@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -13,6 +14,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import com.performgroup.interview.domain.Tag;
 import com.performgroup.interview.domain.Video;
 import com.performgroup.interview.domain.VideoType;
 
@@ -22,7 +24,7 @@ public class VideoSaxParser {
 	private String titleValue;
 	private String pathValue;
 	private VideoType typeval;
-	private List<String> tags = new ArrayList<String>();
+	private List<Tag> tags = new ArrayList<Tag>();
 
 	
 	/**
@@ -98,7 +100,8 @@ public class VideoSaxParser {
 					}
 
 					if (keyword) {
-						tags.add(new String(ch, start, length));
+						Tag tag= new Tag(new String(ch, start, length));
+						tags.add(tag);
 						keyword = false;
 					}
 
@@ -117,7 +120,7 @@ public class VideoSaxParser {
 			video.setVideoType(typeval);
 			video.setCreationDate(new Timestamp(new Date().getTime()));
 
-			// video.setTags(tags);
+			video.setTags((Collection<Tag>)tags);
 
 			return video;
 
