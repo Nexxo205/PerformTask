@@ -70,20 +70,16 @@ public class VideoProcessor {
 
 		Collection<Video> videos = videoService.listVideos();
 
-		for (Video video : videos) {
-			String videoData = String.format("[%d] - %s / %s - %s | {",
-					video.getId(), video.getTitle(), video.getVideoType(),
-					video.getVideoPath());
-			Collection<Tag> tags = video.getTags();
-			Hibernate.initialize(tags);
-			for (Tag tag : tags) {
-				videoData = videoData + " " + tag.getName() + ", ";
-			}
-			videoData = videoData + "}";
-			logger.info(videoData);
-		}
+		outputWithoutTags(logger, videos);
 	}
 
+	public void listVideosWithTags(Logger logger) {
+
+		Collection<Video> videos = videoService.listVideos();
+
+		outputWithTags(logger, videos);
+	}
+	
 	/**
 	 * Processes a video by ingesting data from XML
 	 * 
@@ -181,6 +177,16 @@ public class VideoProcessor {
 	public void findTitle(Logger logger, String title) {
 
 		Collection<Video> videos = videoService.findTitle(title);
+		outputWithTags(logger, videos);
+	}
+
+	public void findType(Logger logger, String stringType) {
+
+		Collection<Video> videos = videoService.findType(stringType);
+		outputWithTags(logger, videos);
+	}
+
+	public void outputWithTags(Logger logger, Collection<Video> videos) {
 		for (Video video : videos) {
 			String videoData = String.format("[%d] - %s / %s - %s | {",
 					video.getId(), video.getTitle(), video.getVideoType(),
@@ -194,20 +200,13 @@ public class VideoProcessor {
 			logger.info(videoData);
 		}
 	}
-
-	public void findType(Logger logger, String stringType) {
-
-		Collection<Video> videos = videoService.findType(stringType);
+	
+	public void outputWithoutTags(Logger logger, Collection<Video> videos) {
 		for (Video video : videos) {
-			String videoData = String.format("[%d] - %s / %s - %s | {",
+			String videoData = String.format("[%d] - %s / %s - %s ",
 					video.getId(), video.getTitle(), video.getVideoType(),
-					video.getVideoPath());
-			Collection<Tag> tags = video.getTags();
-			Hibernate.initialize(tags);
-			for (Tag tag : tags) {
-				videoData = videoData + " " + tag.getName() + ", ";
-			}
-			videoData = videoData + "}";
+					video.getVideoPath());			
+			
 			logger.info(videoData);
 		}
 	}

@@ -17,6 +17,7 @@ public class VideoTaskRunner {
 	private static transient final String USAGE =
 		"\n====== Usage ====== \n" +
 		"list = list videos in the system \n" +
+		"listtags = list videos in the system with their tags \n" +
 		"add = add a video after prompting for file path \n" +
 		"bydate = count videos ingested at diferent dates \n" +
 		"bytypes = count videos by all types \n" +
@@ -58,6 +59,9 @@ public class VideoTaskRunner {
 			}
 			else if (input.equalsIgnoreCase("list")) {
 				videoProcessor.listVideos(LOGGER);
+			}
+			else if (input.equalsIgnoreCase("listtags")) {
+				videoProcessor.listVideosWithTags(LOGGER);
 			}
 			else if (input.equalsIgnoreCase("add")) {
 				System.out.println("Video file?");
